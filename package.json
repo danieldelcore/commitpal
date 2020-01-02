@@ -1,0 +1,35 @@
+{
+  "name": "commitpal",
+  "version": "1.0.0",
+  "description": "A delightful CLI tool for building commit messages",
+  "main": "./bin/index.js",
+  "bin": {
+    "commitpal": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node ./bin/index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Del Core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danieldelcore/commitpal.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit",
+    "message",
+    "emoji",
+    "angular",
+    "picker"
+  ],
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "enquirer": "^2.3.2",
+    "find-config": "^1.0.0",
+    "gradient-string": "^1.2.0",
+    "meow": "^6.0.0",
+    "simple-git": "^1.129.0"
+  }
+}
