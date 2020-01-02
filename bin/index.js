@@ -4,6 +4,11 @@
 const { prompt, Input, AutoComplete } = require("enquirer");
 const meow = require("meow");
 const findConfig = require("find-config");
+const simpleGit = require("simple-git/promise");
+const git = simpleGit().outputHandler((command, stdout, stderr) => {
+  stdout.pipe(process.stdout);
+  stderr.pipe(process.stderr);
+});
 
 const welcome = require("./welcome");
 const { getConfig, hasFile } = require("./file-manager");
@@ -62,7 +67,6 @@ async function main(input, flags) {
       ? flags.config
       : findConfig(`commitpal.config.json`);
     const presetPath = flags.preset ? getPreset(flags.preset) : undefined;
-
     const config = await getConfig(presetPath || configPath);
 
     const commitMessage = await config.steps.reduce(async (accum, step) => {
@@ -73,9 +77,7 @@ async function main(input, flags) {
       return `${message}${step.before || ""}${result}${step.after || ""}`;
     }, "");
 
-    // execute git commit. Maybe using: https://www.npmjs.com/package/simple-git
-
-    console.log("OUTPUT:", commitMessage);
+    await git.commit(commitMessage);
   } catch (error) {
     if (error) {
       console.error(error, "🙅‍♂️");
