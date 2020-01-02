@@ -1,6 +1,6 @@
 {
   "name": "commitpal",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A delightful CLI tool for building commit messages",
   "main": "./bin/index.js",
   "bin": {
