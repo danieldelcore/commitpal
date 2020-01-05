@@ -1,25 +1,24 @@
 #!/usr/bin/env node
 "use strict";
 
-const fs = require("fs");
 const chalk = require("chalk");
-const { promisify } = require("util");
+const findConfig = require("find-config");
 
-const readFile = promisify(fs.readFile);
-
-function getConfig(path) {
+function getConfig(path = "commitpal.config.json") {
   if (!hasFile(path)) {
-    throw `${chalk.red("Error:")} ${chalk.bgRed(path)} ${chalk.red(
+    throw new Error(`${chalk.red("Error:")} ${chalk.bgRed(path)} ${chalk.red(
       "not found"
-    )}`;
+    )}\n`);
   }
 
-  return readFile(path).then(rawdata => JSON.parse(rawdata));
+  const configRaw = findConfig.read(path);
+
+  return JSON.parse(configRaw);
 }
 
 function hasFile(path) {
   try {
-    return fs.existsSync(path);
+    return findConfig(path);
   } catch (error) {
     return false;
   }

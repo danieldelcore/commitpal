@@ -3,15 +3,17 @@
 
 const { prompt, Input, AutoComplete } = require("enquirer");
 const meow = require("meow");
-const findConfig = require("find-config");
+const chalk = require("chalk");
 const simpleGit = require("simple-git/promise");
+
+const presets = require("./presets");
+const welcome = require("./welcome");
+const { getConfig, hasFile } = require("./file-manager");
+
 const git = simpleGit().outputHandler((command, stdout, stderr) => {
   stdout.pipe(process.stdout);
   stderr.pipe(process.stderr);
 });
-
-const welcome = require("./welcome");
-const { getConfig, hasFile } = require("./file-manager");
 
 function getStepPrompt(step) {
   switch (step.type) {
@@ -43,49 +45,32 @@ function getStepPrompt(step) {
   }
 }
 
-function getPreset(preset) {
-  switch (preset) {
-    case "angular":
-      return `${__dirname}/presets/angular.json`;
-    case "emoji":
-      return `${__dirname}/presets/emoji.json`;
-    default:
-      throw `${chalk.red("Error: ")} ${chalk.bgRed(preset)} ${chalk.red(
-        "is not a preset"
-      )}`;
-      break;
-  }
-}
-
 async function main(input, flags) {
-  if (!flags.nowelcome) {
-    welcome();
+  if (!flags.nowelcome) welcome();
+
+  const preset = flags.preset ? presets[flags.preset] : undefined;
+
+  if (!preset && flags.preset) {
+    throw new Error(
+      `${chalk.bgRed(flags.preset)} ${chalk.red(
+        "is not a valid preset."
+      )} Available presets: ${Object.keys(presets).join(', ')}.\n`
+    );
+
+    return 1;
   }
 
-  try {
-    const configPath = flags.config
-      ? flags.config
-      : findConfig(`commitpal.config.json`);
-    const presetPath = flags.preset ? getPreset(flags.preset) : undefined;
-    const config = await getConfig(presetPath || configPath);
+  const config = preset ? preset : getConfig(flags.config);
 
-    const commitMessage = await config.steps.reduce(async (accum, step) => {
-      const message = await accum;
-      const prompt = getStepPrompt(step);
-      const result = await prompt;
+  const message = await config.steps.reduce(async (accum, step) => {
+    const message = await accum;
+    const prompt = getStepPrompt(step);
+    const result = await prompt;
 
-      return `${message}${step.before || ""}${result}${step.after || ""}`;
-    }, "");
+    return `${message}${step.before || ""}${result}${step.after || ""}`;
+  }, "");
 
-    await git.commit(commitMessage);
-  } catch (error) {
-    if (error) {
-      console.error(error, "🙅‍♂️");
-      return 1;
-    }
-
-    return 0;
-  }
+  await git.commit(message);
 }
 
 const cli = meow(
