@@ -6,9 +6,9 @@ const findConfig = require("find-config");
 
 function getConfig(path = "commitpal.config.json") {
   if (!hasFile(path)) {
-    throw new Error(`${chalk.red("Error:")} ${chalk.bgRed(path)} ${chalk.red(
-      "not found"
-    )}\n`);
+    throw new Error(
+      `${chalk.red("Error:")} ${chalk.bgRed(path)} ${chalk.red("not found")}\n`
+    );
   }
 
   const configRaw = findConfig.read(path);

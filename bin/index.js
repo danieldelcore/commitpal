@@ -54,7 +54,7 @@ async function main(input, flags) {
     throw new Error(
       `${chalk.bgRed(flags.preset)} ${chalk.red(
         "is not a valid preset."
-      )} Available presets: ${Object.keys(presets).join(', ')}.\n`
+      )} Available presets: ${Object.keys(presets).join(", ")}.\n`
     );
 
     return 1;
@@ -80,7 +80,7 @@ const cli = meow(
 
   Options
     --config, -c Custom configuration file
-    --preset, -p Select an inbuilt preset. Options: 'angular', 'emoji'
+    --preset, -p Select an inbuilt preset. Options: 'angular', 'emoji', 'jira'
     --nowelcome, -n  Omit welcome message
     --help  Help me
     --version, -v  Version number
