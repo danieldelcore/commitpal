@@ -45,9 +45,7 @@ function getStepPrompt(step) {
   }
 }
 
-async function main(input, flags) {
-  if (!flags.nowelcome) welcome();
-
+function getPreset(flags) {
   const preset = flags.preset ? presets[flags.preset] : undefined;
 
   if (!preset && flags.preset) {
@@ -56,11 +54,37 @@ async function main(input, flags) {
         "is not a valid preset."
       )} Available presets: ${Object.keys(presets).join(", ")}.\n`
     );
-
-    return 1;
   }
 
-  const config = preset ? preset : getConfig(flags.config);
+  return preset;
+}
+
+const getPresetPrompt = async () => {
+  return await new AutoComplete({
+    name: "presets",
+    message: "Please choose a preset",
+    choices: Object.keys(presets).map(key => presets[key].name)
+  }).run();
+};
+
+async function main(input, flags) {
+  if (!flags.nowelcome) welcome();
+
+  let config = {};
+
+  try {
+    const preset = getPreset(flags);
+    config = preset ? preset : getConfig(flags.config);
+  } catch (error) {
+    console.log(error.message);
+
+    const preset = await getPresetPrompt();
+    const presetKey = Object.keys(presets).find(
+      key => presets[key].name === preset
+    );
+
+    config = presets[presetKey];
+  }
 
   const message = await config.steps.reduce(async (accum, step) => {
     const message = await accum;
