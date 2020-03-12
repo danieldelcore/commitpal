@@ -112,3 +112,8 @@ Which can be configured like so:
   ]
 }
 ```
+
+## You might also like...
+
+- [ScriptPal](https://github.com/zeropoly/scriptpal): A simple npm script palette for lazy people
+- [Enquirer](https://github.com/enquirer/enquirer): Stylish, intuitive and user-friendly prompts

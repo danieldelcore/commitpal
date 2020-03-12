@@ -5,9 +5,11 @@ const { prompt, Input, AutoComplete } = require("enquirer");
 const meow = require("meow");
 const chalk = require("chalk");
 const simpleGit = require("simple-git/promise");
+const Conf = require("conf");
 
 const presets = require("./presets");
 const welcome = require("./welcome");
+const hash = require("./hash");
 const { getConfig, hasFile } = require("./file-manager");
 
 const git = simpleGit().outputHandler((command, stdout, stderr) => {
@@ -15,13 +17,15 @@ const git = simpleGit().outputHandler((command, stdout, stderr) => {
   stderr.pipe(process.stderr);
 });
 
-function getStepPrompt(step) {
+function getStepPrompt(step, previous) {
   switch (step.type) {
     case "option":
       return new AutoComplete({
         name: "step",
         message: step.message,
-        choices: step.options.map(option => option.description)
+        choices: step.options.map(option => option.description),
+        initial:
+          step.options.findIndex(option => option.value === previous) || 0
       })
         .run()
         .then(choice => {
@@ -34,7 +38,7 @@ function getStepPrompt(step) {
     case "text":
       return new Input({
         message: step.message,
-        initial: step.initial
+        initial: step.initial || previous
       })
         .run()
         .then(choice => choice || "");
@@ -70,6 +74,7 @@ const getPresetPrompt = async () => {
 async function main(input, flags) {
   if (!flags.nowelcome) welcome();
 
+  const history = new Conf();
   let config = {};
 
   try {
@@ -86,10 +91,16 @@ async function main(input, flags) {
     config = presets[presetKey];
   }
 
-  const message = await config.steps.reduce(async (accum, step) => {
+  const message = await config.steps.reduce(async (accum, step, i) => {
     const message = await accum;
-    const prompt = getStepPrompt(step);
+
+    const stepHash = hash(`${config.name}${step.message}${i}`);
+    const previous = history.get(stepHash);
+
+    const prompt = getStepPrompt(step, previous);
     const result = await prompt;
+
+    history.set(stepHash, result);
 
     return `${message}${step.before || ""}${result}${step.after || ""}`;
   }, "");
