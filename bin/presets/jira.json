@@ -1,0 +1,16 @@
+{
+  "name": "Jira ticket",
+  "steps": [
+    {
+      "type": "text",
+      "max": 10,
+      "message": "Please provide a Jira ticket id",
+      "after": ": "
+    },
+    {
+      "type": "text",
+      "max": 50,
+      "message": "Summarise this change..."
+    }
+  ]
+}

@@ -30,6 +30,31 @@ Usage with npx
 npx commitpal
 ```
 
+## API 🤖
+
+- `--config`, `-c` Custom configuration file
+- `--preset`, `-p` Select an inbuilt preset. Options: 'angular', 'emoji', 'jira'
+- `--nowelcome`, `-n` Omit welcome message
+- `--help` `Help`me
+- `--version`, `-v` Version number
+
+## Examples
+
+- `$ commitpal --config ../commitpal.config.json`
+- `$ commitpal --nowelcome`
+- `$ commitpal --preset emoji`
+- `$ npx commitpal`
+
+## Presets
+
+CommitPal is loaded with the following collection of preset configurations:
+
+- **Emoji**: The Emoji commit format loosely [based on this Gist](https://gist.github.com/parmentf/035de27d6ed1dce0b36a)
+- **Angular**: [The Angular commit message conventions](https://gist.github.com/stephenparish/9941e89d80e2bc58a153)
+- **Jira**: An unofficial format that simply accepts a Jira ticket id and a message
+
+Don't like these presets, or want to provide your own? Raise a Pull Request 🙏
+
 ## Configuration
 
 If you're not using one of the predefined commit message formats, CommitPal will attempt to search for a `commitpal.config.json`.
