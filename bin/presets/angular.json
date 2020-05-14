@@ -17,19 +17,10 @@
       ]
     },
     {
-      "type": "option",
+      "type": "text",
       "message": "What scope of the project is affected?",
       "before": "(",
-      "after": "):",
-      "options": [
-        { "value": "authentication", "description": "Authentication modules" },
-        { "value": "users", "description": "User profiles" },
-        { "value": "settings", "description": "Settings" },
-        { "value": "payments", "description": "Payments modules" },
-        { "value": "shipping", "description": "Shipping modules" },
-        { "value": "build system", "description": "Build system" },
-        { "value": "CI", "description": "Continuous integration" }
-      ]
+      "after": "):"
     },
     {
       "type": "text",
