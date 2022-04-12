@@ -31,6 +31,6 @@
     "find-config": "^1.0.0",
     "gradient-string": "^1.2.0",
     "meow": "^6.0.0",
-    "simple-git": "^1.129.0"
+    "simple-git": "^3.5.0"
   }
 }
